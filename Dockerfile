@@ -17,6 +17,8 @@ RUN bundle install --jobs 5
 
 ADD . $RAILS_ROOT
 ENV PATH=$RAILS_ROOT/bin:${PATH}
+ENV APP_VERSION=1.0
 
 EXPOSE 3000
-CMD bundle exec rails s -b '0.0.0.0' -p 3000
+# CMD bundle exec rails s -b '0.0.0.0' -p 3000
+CMD ["bash", "-c", "bin/rails db:create && bin/rails db:migrate && bundle exec rails s -b '0.0.0.0' -p 3000"]
