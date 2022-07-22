@@ -2,9 +2,7 @@ version: '3.7'
 
 services:
   web:
-    build:
-      context: https://github.com/zipofar/test_rails
-      dockerfile: /Dockerfile
+    image: image: zipofar/uffizzi_test_rails_simple:latest
     environment:
       APP_VERSION: 1.4
       RAILS_ENV: production
