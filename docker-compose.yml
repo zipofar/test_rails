@@ -9,7 +9,6 @@ services:
       - ~/.bash_history:/root/.bash_history
       - &bundle-cache-volume bundle_cache:/bundle_cache
       - database:/db
-      # - /db
     ports:
       - 3000:3000
     environment: &web-environment
@@ -17,7 +16,7 @@ services:
       GEM_HOME: /bundle_cache
       GEM_PATH: /bundle_cache
       APP_VERSION: 1.1
-    command: bash -c "bin/rails db:create && bin/rails db:migrate && bundle exec rails s -b '0.0.0.0' -p 3000"
+      RAILS_ROUTES_SCOPE: app
 
 volumes:
   bundle_cache:
