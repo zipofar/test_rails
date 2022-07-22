@@ -12,11 +12,12 @@ services:
       resources:
         limits:
           memory: 1000M
+    command: bash -c "bin/rails db:create && bin/rails db:migrate && bundle exec rails s -b '0.0.0.0' -p 4000"
 
 x-uffizzi:
   ingress:
     service: web
-    port: 3000
+    port: 4000
 
   continuous_preview:
     share_to_github: true

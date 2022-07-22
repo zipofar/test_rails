@@ -18,8 +18,6 @@ services:
       - ~/.bash_history:/root/.bash_history
       - &bundle-cache-volume bundle_cache:/bundle_cache
       - /db
-    # ports:
-    #   - 3000:3000
     environment: &web-environment
       BUNDLE_PATH: /bundle_cache
       GEM_HOME: /bundle_cache
