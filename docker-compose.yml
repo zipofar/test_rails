@@ -1,6 +1,15 @@
 version: '3.7'
 
 services:
+  nginx:
+    image: nginx:latest
+    links:
+      - web
+    volumes:
+      - ./infrastructure/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+
   web:
     build: .
     volumes: &web-volumes
@@ -8,17 +17,17 @@ services:
       - ~/.ssh:/root/.ssh
       - ~/.bash_history:/root/.bash_history
       - &bundle-cache-volume bundle_cache:/bundle_cache
-      - database:/db
-      # - /db
-    ports:
-      - 3000:3000
+      - /db
+    # ports:
+    #   - 3000:3000
     environment: &web-environment
       BUNDLE_PATH: /bundle_cache
       GEM_HOME: /bundle_cache
       GEM_PATH: /bundle_cache
       APP_VERSION: 1.1
-    command: bash -c "bin/rails db:create && bin/rails db:migrate && bundle exec rails s -b '0.0.0.0' -p 3000"
+      RAILS_LOG_TO_STDOUT: 1
+      RAILS_ROUTES_SCOPE: subrails
+    command: ["bash", "-c", "RAILS_ENV=production bin/rails db:create && bin/rails db:migrate && bundle exec rails s -e production -b '0.0.0.0' -p 3000"]
 
 volumes:
   bundle_cache:
-  database:
