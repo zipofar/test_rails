@@ -3,7 +3,7 @@ version: '3.7'
 services:
   web:
     build:
-      context: https://github.com/zipofar/test_rails#feature/uffizzi_test
+      context: https://github.com/zipofar/test_rails
       dockerfile: /Dockerfile
     environment:
       APP_VERSION: 1.4
