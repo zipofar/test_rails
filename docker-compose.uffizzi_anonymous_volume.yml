@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: https://github.com/zipofar/test_rails#test/platform_123
+      dockerfile: /Dockerfile
+    environment:
+      APP_VERSION: 1.0
+      RAILS_ENV: production
+      RAILS_LOG_TO_STDOUT: 1
+      SECRET_KEY_BASE: b17d9f911b6421bf7a3a0d2b5310f116d1a51ba47cf89a4025c9725d5772c82a3577e6105684184e2f51bf184cf142bb3236a853c1073c4e8b993ce8b8e9264d
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    volumes:
+      - /db
+
+x-uffizzi:
+  ingress:
+    service: web
+    port: 3000
+
+  continuous_preview:
+    share_to_github: true
+    delete_preview_after: 96h
+    delete_preview_when_image_tag_is_updated: true
+    deploy_preview_when_image_tag_is_created: true
+    delete_preview_when_pull_request_is_closed: true
+    deploy_preview_when_pull_request_is_opened: true
