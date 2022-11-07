@@ -15,17 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       compose-file-cache-key: ${{ steps.hash.outputs.hash }}
-      compose-file-cache-path: docker-compose.uffizzi_multy_svc.yml
+      compose-file-cache-path: sub-docker-compose-files/docker-compose.uffizzi_multy_svc.yml
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v3
       - name: Hash Rendered Compose File
         id: hash
-        run: echo "::set-output name=hash::$(md5sum docker-compose.uffizzi_multy_svc.yml | awk '{ print $1 }')"
+        run: echo "::set-output name=hash::$(md5sum sub-docker-compose-files/docker-compose.uffizzi_multy_svc.yml | awk '{ print $1 }')"
       - name: Cache Rendered Compose File
         uses: actions/cache@v3
         with:
-          path: docker-compose.uffizzi_multy_svc.yml
+          path: sub-docker-compose-files/docker-compose.uffizzi_multy_svc.yml
           key: ${{ steps.hash.outputs.hash }}
 
   deploy-uffizzi-preview:
