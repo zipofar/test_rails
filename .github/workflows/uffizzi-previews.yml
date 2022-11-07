@@ -1,0 +1,45 @@
+name: Build Images and Handle Uffizzi Previews.
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - qa
+  pull_request:
+    types: [opened,reopened,synchronize,closed]
+
+jobs:
+  render-compose-file:
+    name: Render Docker Compose File
+    runs-on: ubuntu-latest
+    outputs:
+      compose-file-cache-key: ${{ steps.hash.outputs.hash }}
+      compose-file-cache-path: sub-docker-compose-files/docker-compose.uffizzi_multy_svc.yml
+    steps:
+      - name: Checkout git repo
+        uses: actions/checkout@v3
+      - name: Hash Rendered Compose File
+        id: hash
+        run: echo "::set-output name=hash::$(md5sum sub-docker-compose-files/docker-compose.uffizzi_multy_svc.yml | awk '{ print $1 }')"
+      - name: Cache Rendered Compose File
+        uses: actions/cache@v3
+        with:
+          path: sub-docker-compose-files/docker-compose.uffizzi_multy_svc.yml
+          key: ${{ steps.hash.outputs.hash }}
+
+  deploy-uffizzi-preview:
+    name: Use Remote Workflow to Preview on Uffizzi
+    needs:
+      - render-compose-file
+    uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2
+    if: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
+    with:
+      compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
+      compose-file-cache-path: ${{ needs.render-compose-file.outputs.compose-file-cache-path }}
+      server: https://pr-437-deployment-7156-uffizzi-platform.app.uffizzi.com/
+      project: test_rails
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
